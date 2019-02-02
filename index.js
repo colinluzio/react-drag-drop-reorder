@@ -12,7 +12,8 @@ export default class DragDropReorder extends Component{
       list        :  props.list,
       itemClass   :  props.itemClass,
       itemKey     :  props.itemKey,
-      isDragging  :  false
+      isDragging  :  false,
+      style       : {background : 'blue', width: '100px', height: '100px', position: 'absolute'},
     }
 
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -40,6 +41,12 @@ export default class DragDropReorder extends Component{
   initializeDrag(event){
     event.preventDefault();
     this.setState({isDragging : true});
+
+    let element       = ReactDOM.findDOMNode(event.target);
+    let elementStyle  = window.getComputedStyle(element);
+    let style         = {width: elementStyle.width, height: elementStyle.height, border: elementStyle.border, background: elementStyle.background, position:'absolute'};
+
+    this.setState({style});
 
     // Mouse events
     window.addEventListener('mousemove', this.onMouseMove); // Move mouse
@@ -73,6 +80,7 @@ export default class DragDropReorder extends Component{
     return(
       <div className={this.props.listClass}>
         {list}
+        <div style={this.state.style}>Drag me</div>
       </div>
     );
   }
