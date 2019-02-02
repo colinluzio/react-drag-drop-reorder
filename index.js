@@ -5,13 +5,19 @@ import ReactDOM from 'react-dom';
 export default class DragDropReorder extends Component{
 
   constructor(props){
+
     super(props)
 
     this.state = {
-      list :     props.list,
-      itemClass: props.itemClass,
-      itemKey:   props.itemKey
+      list        :  props.list,
+      itemClass   :  props.itemClass,
+      itemKey     :  props.itemKey,
+      isDragging  :  false
     }
+
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseUp   = this.onMouseUp.bind(this);
+
   }
 
   getPlaceholderClass (item) {
@@ -33,6 +39,7 @@ export default class DragDropReorder extends Component{
 
   initializeDrag(event){
     event.preventDefault();
+    this.setState({isDragging : true});
 
     // Mouse events
     window.addEventListener('mousemove', this.onMouseMove); // Move mouse
@@ -41,10 +48,13 @@ export default class DragDropReorder extends Component{
 
   onMouseMove(event){
     event.preventDefault();
+
+    console.log(this.state.isDragging);
   }
 
   onMouseUp(event){
     event.preventDefault();
+    this.setState({isDragging: false});
 
     // Mouse events
     window.removeEventListener('mouseup', this.onMouseUp); // Mouse up
