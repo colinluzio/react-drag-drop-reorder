@@ -13,11 +13,22 @@ export default class DragDropReorder extends Component{
       itemClass   :  props.itemClass,
       itemKey     :  props.itemKey,
       isDragging  :  false,
-      style       : {background : 'blue', width: '100px', height: '100px', position: 'absolute'},
+      style       : {},
+      innerHTML   : '',
+      DOMRect     : {}
     }
 
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp   = this.onMouseUp.bind(this);
+
+  }
+
+  componentDidMount(){
+
+    let container        = ReactDOM.findDOMNode(this);
+    let containerCoords  = container.getBoundingClientRect();
+
+    this.setState({DOMRect : containerCoords});
 
   }
 
@@ -44,9 +55,12 @@ export default class DragDropReorder extends Component{
 
     let element       = ReactDOM.findDOMNode(event.target);
     let elementStyle  = window.getComputedStyle(element);
-    let style         = {width: elementStyle.width, height: elementStyle.height, border: elementStyle.border, background: elementStyle.background, position:'absolute'};
+    let style         = {width: elementStyle.width, height: elementStyle.height, border: elementStyle.border,
+                         background: elementStyle.background, position:'absolute', padding: elementStyle.padding};
 
-    this.setState({style});
+    let innerHTML     = element.innerHTML
+
+    this.setState({style, innerHTML});
 
     // Mouse events
     window.addEventListener('mousemove', this.onMouseMove); // Move mouse
@@ -56,12 +70,28 @@ export default class DragDropReorder extends Component{
   onMouseMove(event){
     event.preventDefault();
 
-    console.log(this.state.isDragging);
+    let DOMRect = this.state.DOMRect;
+
+    let dragOffset = {
+      top: event.clientY  - DOMRect.top,
+      left: event.clientX - DOMRect.left
+    };
+
+    let style  = this.state.style;
+    let objectStyle = {};
+
+    for(let k in style) objectStyle[k]=style[k];
+
+    objectStyle.top  = dragOffset.top;
+    objectStyle.left = dragOffset.left;
+
+
+    this.setState({style: objectStyle});
   }
 
   onMouseUp(event){
     event.preventDefault();
-    this.setState({isDragging: false});
+    this.setState({isDragging: false, style: {}});
 
     // Mouse events
     window.removeEventListener('mouseup', this.onMouseUp); // Mouse up
@@ -80,7 +110,7 @@ export default class DragDropReorder extends Component{
     return(
       <div className={this.props.listClass}>
         {list}
-        <div style={this.state.style}>Drag me</div>
+        <div style={this.state.style}>{this.state.innerHTML}</div>
       </div>
     );
   }
