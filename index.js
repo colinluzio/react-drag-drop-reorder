@@ -92,6 +92,10 @@ export default class DragDropReorder extends Component{
     let listElements = this.nodesToArray(ReactDOM.findDOMNode(this).childNodes);
     let collision    = this.findCollision(listElements, event);
 
+    console.log(collision);
+
+    //console.log(collision);
+
     this.setState({style: objectStyle, lastPosX: event.clientX, lastPosY: event.clientY});
   }
 
@@ -106,12 +110,67 @@ export default class DragDropReorder extends Component{
   }
 
   findCollision(listElements, event){
+    let totalHeight = parseInt(this.state.style.height.split('p')[0]);
+    let totalWidth  = parseInt(this.state.style.width.split('p')[0]);
+
     let movedLeft = this.state.lastPosX > event.clientX;
     let movedDown = event.clientY  > this.state.lastPosY;
-    console.log(movedDown);
+
     for (let i = 0; i < listElements.length; i += 1) {
         let rect = listElements[i].getBoundingClientRect();
-        //console.log(rect);
+        let clientTop    = event.clientY;
+        let clientBottom = event.clientY + totalHeight;
+        let clientLeft   = event.clientX;
+        let clientRight  = event.clientY + totalWidth;
+
+        if(movedLeft){
+          if(movedDown){
+            if((event.clientX > rect.right) && (rect.left > event.clientY) && (rect.bottom > clientBottom) && (clientBottom > rect.top)){
+
+              return listElements[i];
+
+            }
+
+          } else {
+
+            if((event.clientX > rect.right) && (rect.left > event.clientY) && (clientTop > rect.top) && (rect.bottom > clientTop)) {
+
+              return listElements[i];
+
+            }
+
+          }
+        } else {
+          if(movedDown){
+            if((clientRight > rect.left) && (rect.right > clientRight) && (rect.bottom > clientBottom) && (clientBottom > rect.top)){
+
+              return listElements[i];
+
+            }
+
+          } else {
+
+            if((clientRight > rect.left) && (rect.right > clientRight) && (clientTop > rect.top) && (rect.bottom > clientTop)) {
+
+              return listElements[i];
+
+            }
+
+          }
+        }
+        //   } else {
+        //     if(event.clientX > rect.right && event.clientY > rect.bottom){
+        //       return listElements[i];
+        //     }
+        //   }
+        // } else {
+        //   if(movedDown){
+        //     if(rect.right > event.clientX && event.clientY > rect.bottom){
+        //       return listElements[i];
+        //     }
+        //   }
+        // }
+
     }
   }
 
