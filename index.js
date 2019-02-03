@@ -14,12 +14,16 @@ export default class DragDropReorder extends Component{
       itemKey     :  props.itemKey,
       isDragging  :  false,
       style       : {},
+      DOMRect     : {},
       innerHTML   : '',
-      DOMRect     : {}
+      lastPosX    : 0,
+      lastPosY    : 0,
+
     }
 
-    this.onMouseMove = this.onMouseMove.bind(this);
-    this.onMouseUp   = this.onMouseUp.bind(this);
+    this.onMouseMove    = this.onMouseMove.bind(this);
+    this.onMouseUp      = this.onMouseUp.bind(this);
+    this.findCollision  = this.findCollision.bind(this);
 
   }
 
@@ -85,8 +89,10 @@ export default class DragDropReorder extends Component{
     objectStyle.top  = dragOffset.top;
     objectStyle.left = dragOffset.left;
 
+    let listElements = this.nodesToArray(ReactDOM.findDOMNode(this).childNodes);
+    let collision    = this.findCollision(listElements, event);
 
-    this.setState({style: objectStyle});
+    this.setState({style: objectStyle, lastPosX: event.clientX, lastPosY: event.clientY});
   }
 
   onMouseUp(event){
@@ -97,6 +103,20 @@ export default class DragDropReorder extends Component{
     window.removeEventListener('mouseup', this.onMouseUp); // Mouse up
     window.removeEventListener('mousemove', this.onMouseMove); // Mouse move
 
+  }
+
+  findCollision(listElements, event){
+    let movedLeft = this.state.lastPosX > event.clientX;
+    let movedDown = event.clientY  > this.state.lastPosY;
+    console.log(movedDown);
+    for (let i = 0; i < listElements.length; i += 1) {
+        let rect = listElements[i].getBoundingClientRect();
+        //console.log(rect);
+    }
+  }
+
+  nodesToArray(nodes) {
+    return Array.prototype.slice.call(nodes, 0);
   }
 
   render(){
