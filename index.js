@@ -93,7 +93,7 @@ export default class DragDropReorder extends Component{
     let listElements = this.nodesToArray(ReactDOM.findDOMNode(this).childNodes);
     let collision    = this.findCollision(listElements, event);
 
-    collision = collision ? collision : this.state.focusElement;
+    collision = collision !== undefined ? collision : this.state.focusElement;
 
     this.setState({style: objectStyle, lastPosX: event.clientX, lastPosY: event.clientY, focusElement: collision});
   }
@@ -120,7 +120,7 @@ export default class DragDropReorder extends Component{
         let clientTop    = event.clientY;
         let clientBottom = event.clientY + totalHeight;
         let clientLeft   = event.clientX;
-        let clientRight  = event.clientY + totalWidth;
+        let clientRight  = event.clientX + totalWidth;
 
         if(movedLeft){
           if(movedDown){
@@ -150,7 +150,6 @@ export default class DragDropReorder extends Component{
             }
 
           } else {
-
             if((clientRight > rect.left) && (rect.right > clientRight) && (clientTop > rect.top) && (rect.bottom > clientTop)) {
 
               return i;
@@ -162,6 +161,7 @@ export default class DragDropReorder extends Component{
         }
 
     }
+    
   }
 
   nodesToArray(nodes) {
