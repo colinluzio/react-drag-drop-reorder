@@ -13,6 +13,7 @@ export default class DragDropReorder extends Component{
       itemClass   :  props.itemClass,
       itemKey     :  props.itemKey,
       isDragging  :  false,
+      focusElement: '',
       style       : {},
       DOMRect     : {},
       innerHTML   : '',
@@ -92,11 +93,9 @@ export default class DragDropReorder extends Component{
     let listElements = this.nodesToArray(ReactDOM.findDOMNode(this).childNodes);
     let collision    = this.findCollision(listElements, event);
 
-    console.log(collision);
+    collision = collision ? collision : this.state.focusElement;
 
-    //console.log(collision);
-
-    this.setState({style: objectStyle, lastPosX: event.clientX, lastPosY: event.clientY});
+    this.setState({style: objectStyle, lastPosX: event.clientX, lastPosY: event.clientY, focusElement: collision});
   }
 
   onMouseUp(event){
@@ -125,26 +124,28 @@ export default class DragDropReorder extends Component{
 
         if(movedLeft){
           if(movedDown){
-            if((event.clientX > rect.right) && (rect.left > event.clientY) && (rect.bottom > clientBottom) && (clientBottom > rect.top)){
 
-              return listElements[i];
+            if((rect.right > event.clientX) && (event.clientX > rect.left) && (rect.bottom > clientBottom) && (clientBottom > rect.top)){
+
+              return i;
 
             }
 
           } else {
 
-            if((event.clientX > rect.right) && (rect.left > event.clientY) && (clientTop > rect.top) && (rect.bottom > clientTop)) {
+            if((rect.right > event.clientX) && (event.clientX > rect.left) && (clientTop > rect.top) && (rect.bottom > clientTop)) {
 
-              return listElements[i];
+              return i;
 
             }
 
           }
+
         } else {
           if(movedDown){
             if((clientRight > rect.left) && (rect.right > clientRight) && (rect.bottom > clientBottom) && (clientBottom > rect.top)){
 
-              return listElements[i];
+              return i;
 
             }
 
@@ -152,24 +153,13 @@ export default class DragDropReorder extends Component{
 
             if((clientRight > rect.left) && (rect.right > clientRight) && (clientTop > rect.top) && (rect.bottom > clientTop)) {
 
-              return listElements[i];
+              return i;
 
             }
 
           }
+
         }
-        //   } else {
-        //     if(event.clientX > rect.right && event.clientY > rect.bottom){
-        //       return listElements[i];
-        //     }
-        //   }
-        // } else {
-        //   if(movedDown){
-        //     if(rect.right > event.clientX && event.clientY > rect.bottom){
-        //       return listElements[i];
-        //     }
-        //   }
-        // }
 
     }
   }
@@ -183,7 +173,7 @@ export default class DragDropReorder extends Component{
     let list = this.state.list.map(function (item, index) {
                   let itemKey = item[self.props.itemKey] || item;
                   let itemClass = [self.props.itemClass, self.getPlaceholderClass(item), self.getSelectedClass(item)].join(' ');
-                  return <div key={itemKey} className={itemClass} onMouseDown={self.initializeDrag.bind(self)}>Hello</div>
+                  return <div key={itemKey} id={itemKey} className={itemClass} style={{background : (index === self.state.focusElement ? 'black':'white')}}onMouseDown={self.initializeDrag.bind(self)}>Hello</div>
                });
 
     return(
