@@ -190,7 +190,7 @@ export default class DragDropReorder extends Component{
     let list = this.state.list.map(function (item, index) {
                   let itemKey = item[self.props.itemKey] || item;
                   let itemClass = [self.props.itemClass, self.getPlaceholderClass(item), self.getSelectedClass(item)].join(' ');
-                  return <div key={itemKey} id={itemKey} className={itemClass} style={{background : (index === self.state.focusElement ? 'black':'white')}}onMouseDown={self.initializeDrag.bind(self, index)}>{item}</div>
+                  return <div key={itemKey} id={itemKey} className={itemClass} style={{background : ((index === self.state.focusElement) && self.state.isDragging ? 'black':'white')}}onMouseDown={self.initializeDrag.bind(self, index)}>{item}</div>
                });
 
     return(
