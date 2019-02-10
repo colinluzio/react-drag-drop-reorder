@@ -9,22 +9,24 @@ export default class DragDropReorder extends Component{
     super(props)
 
     this.state = {
-      list        :  props.list,
-      itemClass   :  props.itemClass,
-      itemKey     :  props.itemKey,
-      isDragging  :  false,
-      focusElement: '',
-      style       : {},
-      DOMRect     : {},
-      innerHTML   : '',
-      lastPosX    : 0,
-      lastPosY    : 0,
+      list          :  props.list,
+      itemClass     :  props.itemClass,
+      itemKey       :  props.itemKey,
+      isDragging    :  false,
+      selectedIndex : 0,
+      focusElement  : 0,
+      style         : {},
+      DOMRect       : {},
+      innerHTML     : '',
+      lastPosX      : 0,
+      lastPosY      : 0,
 
     }
 
     this.onMouseMove    = this.onMouseMove.bind(this);
     this.onMouseUp      = this.onMouseUp.bind(this);
     this.findCollision  = this.findCollision.bind(this);
+    this.updateArray    = this.updateArray.bind(this);
 
   }
 
@@ -54,7 +56,7 @@ export default class DragDropReorder extends Component{
     return undefined;
   }
 
-  initializeDrag(event){
+  initializeDrag(selectedIndex, event){
     event.preventDefault();
     this.setState({isDragging : true});
 
@@ -65,7 +67,7 @@ export default class DragDropReorder extends Component{
 
     let innerHTML     = element.innerHTML
 
-    this.setState({style, innerHTML});
+    this.setState({style, innerHTML, selectedIndex});
 
     // Mouse events
     window.addEventListener('mousemove', this.onMouseMove); // Move mouse
@@ -101,6 +103,7 @@ export default class DragDropReorder extends Component{
   onMouseUp(event){
     event.preventDefault();
     this.setState({isDragging: false, style: {}});
+    this.updateArray();
 
     // Mouse events
     window.removeEventListener('mouseup', this.onMouseUp); // Mouse up
@@ -161,11 +164,25 @@ export default class DragDropReorder extends Component{
         }
 
     }
-    
+
   }
 
   nodesToArray(nodes) {
     return Array.prototype.slice.call(nodes, 0);
+  }
+
+  updateArray(){
+    Array.prototype.move = function (from, to) {
+      this.splice(to, 0, this.splice(from, 1)[0]);
+    };
+
+    let selected = this.state.selectedIndex;
+    let focused  = this.state.focusElement;
+    let items    = this.state.list;
+
+    items.move(selected, focused);
+
+    this.setState({list: items});
   }
 
   render(){
@@ -173,7 +190,7 @@ export default class DragDropReorder extends Component{
     let list = this.state.list.map(function (item, index) {
                   let itemKey = item[self.props.itemKey] || item;
                   let itemClass = [self.props.itemClass, self.getPlaceholderClass(item), self.getSelectedClass(item)].join(' ');
-                  return <div key={itemKey} id={itemKey} className={itemClass} style={{background : (index === self.state.focusElement ? 'black':'white')}}onMouseDown={self.initializeDrag.bind(self)}>Hello</div>
+                  return <div key={itemKey} id={itemKey} className={itemClass} style={{background : (index === self.state.focusElement ? 'black':'white')}}onMouseDown={self.initializeDrag.bind(self, index)}>{item}</div>
                });
 
     return(
