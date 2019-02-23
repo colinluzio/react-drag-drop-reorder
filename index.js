@@ -196,7 +196,10 @@ export default class DragDropReorder extends Component{
     return(
       <div className={this.props.listClass}>
         {list}
+        {this.state.isDragging ? 
         <div style={this.state.style}>{this.state.innerHTML}</div>
+        : null
+        }
       </div>
     );
   }
