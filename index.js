@@ -104,6 +104,7 @@ export default class DragDropReorder extends Component{
     event.preventDefault();
     this.setState({isDragging: false, style: {}});
     this.updateArray();
+    this.props.callback(event, this.state.selectedIndex, this.state.list);
 
     // Mouse events
     window.removeEventListener('mouseup', this.onMouseUp); // Mouse up
@@ -183,6 +184,7 @@ export default class DragDropReorder extends Component{
     items.move(selected, focused);
 
     this.setState({list: items});
+
   }
 
   render(){
@@ -196,7 +198,7 @@ export default class DragDropReorder extends Component{
     return(
       <div className={this.props.listClass}>
         {list}
-        {this.state.isDragging ? 
+        {this.state.isDragging ?
         <div style={this.state.style}>{this.state.innerHTML}</div>
         : null
         }

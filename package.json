@@ -1,0 +1,19 @@
+{
+  "name": "dragdropreorder",
+  "version": "1.0.0",
+  "description": "A package to enable drag and drop resorting of elements functionality",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colinluzio/react-drag-drop-reorder.git"
+  },
+  "author": "Colin Luzio",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/colinluzio/react-drag-drop-reorder/issues"
+  },
+  "homepage": "https://github.com/colinluzio/react-drag-drop-reorder#readme"
+}
